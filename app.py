@@ -4,9 +4,7 @@ import numpy as np
 import requests
 from io import StringIO
 
-
-st.set_page_config(page_title="Movie Recommender")
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide", page_title="Movie.io")
 # Apply custom CSS for the container width
 st.markdown("""
     <style>
@@ -264,9 +262,6 @@ def myIBCF(newuser, similarity_matrix):
 
 movie_100 = load_data().head(100)
 
-# Dictionary for the user movie ratings
-ratings_dict = {}
-
 # Container for aligning submit button
 top_columns = st.columns((10,2))
 with top_columns[1]:
@@ -275,37 +270,45 @@ with top_columns[1]:
 # Container to set the output 10 movie reviews
 output_container = st.container(border=True)
 
+@st.experimental_fragment
+def rate_movie():
+    # Dictionary for the user movie ratings
+    ratings_dict = {}
 
-st.markdown("<h3 style='text-align: center; padding-bottom: 20px'>Rate These Movies </h3>", unsafe_allow_html=True)
-rating_container = st.container(height=800)
+    st.markdown("<h3 style='text-align: center; padding-bottom: 20px'>Rate These Movies </h3>", unsafe_allow_html=True)
+    rating_container = st.container(height=800)
 
-# Create the scrollable container for movie ratings
-with rating_container:
-    num_cols = 5
-    rows = len(movie_100) // num_cols + (len(movie_100) % num_cols > 0)
+    # Create the scrollable container for movie ratings
+    with rating_container:
+        num_cols = 5
+        rows = len(movie_100) // num_cols + (len(movie_100) % num_cols > 0)
 
-    for row_id in range(rows):
-        cols = st.columns(num_cols)
-        for col_id, col in enumerate(cols):
-            movie_id = row_id * num_cols + col_id
-            if movie_id >= len(movie_100):
-                break
-            movie = movie_100.iloc[movie_id]
-            with col:
-                st.image(movie['thumbnail_url'], use_container_width=True)
-                st.text(movie['title'])
+        for row_id in range(rows):
+            cols = st.columns(num_cols)
+            for col_id, col in enumerate(cols):
+                movie_id = row_id * num_cols + col_id
+                if movie_id >= len(movie_100):
+                    break
+                movie = movie_100.iloc[movie_id]
+                with col:
+                    st.image(movie['thumbnail_url'], use_container_width=True)
+                    st.text(movie['title'])
 
-                # # Capture the star rating selection for each movie
-                # rating = st_star_rating("Rating", maxValue=5, defaultValue=0, key=f"rating_{movie['movie_id']}", size=20)
+                    # # Capture the star rating selection for each movie
+                    # rating = st_star_rating("Rating", maxValue=5, defaultValue=0, key=f"rating_{movie['movie_id']}", size=20)
 
-                rating = st.radio(f"Rating", options=["Select a rating", "★", "★★", "★★★", "★★★★", "★★★★★"], index=0, key=f"rating_{movie['movie_id']}")
+                    rating = st.radio(f"Rating", options=["Select a rating", "★", "★★", "★★★", "★★★★", "★★★★★"], index=0, key=f"rating_{movie['movie_id']}")
 
-                # # Store the rating in the ratings_dict, or set to NaN if not rated
-                ratings_dict[movie['movie_id']] = rating if rating != 0 else np.nan
+                    # # Store the rating in the ratings_dict, or set to NaN if not rated
+                    ratings_dict[movie['movie_id']] = rating if rating != 0 else np.nan
 
-    for movie_id in ratings_dict:
-        star_rating = ratings_dict[movie_id]
-        ratings_dict[movie_id] = {"★": 1, "★★": 2, "★★★": 3, "★★★★": 4, "★★★★★": 5}.get(star_rating, np.nan)
+        for movie_id in ratings_dict:
+            star_rating = ratings_dict[movie_id]
+            ratings_dict[movie_id] = {"★": 1, "★★": 2, "★★★": 3, "★★★★": 4, "★★★★★": 5}.get(star_rating, np.nan)
+
+    return ratings_dict
+
+ratings_dict  = rate_movie()
 
 if submit_rating:
     # Create a DataFrame from the ratings_dict, ensuring that unrated movies are set to NaN
