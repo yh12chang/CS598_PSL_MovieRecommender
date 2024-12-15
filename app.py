@@ -346,8 +346,6 @@ if submit_rating:
     # Execute IBCF computation
     top_movies_df = myIBCF(user_rating_array, top30_s_matrix)
 
-    st.write(top_movies_df.index)
-
     # Display a thank you message and the top 10 movies according to the IBCF computation
     with output_container:
         st.markdown("<h4 style='text-align: center; padding-bottom: 20px'>Here are your recommendations! </h4>", unsafe_allow_html=True)
@@ -370,4 +368,4 @@ if submit_rating:
 
                 with col:
                     st.image(movie['thumbnail_url'].values[0], use_container_width=True)
-                    st.text(movie['title'])
+                    st.text(movie['title'].values[0])
