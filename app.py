@@ -347,7 +347,7 @@ if submit_rating:
     top_movies_df = myIBCF(user_rating_array, top30_s_matrix)
 
     st.write(top_movies_df.index)
-    st.write(movies_df)
+    st.write(type(movies_df.index[1]))
     st.write(type(top_movies_df.index[1]))
     st.write(movies_df[top_movies_df.index[1]])
     st.write(top_movies_df.index[2])
