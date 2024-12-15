@@ -311,7 +311,7 @@ def rate_movie():
                     rating = st.radio(f"Rating", options=["Select a rating", "★", "★★", "★★★", "★★★★", "★★★★★"], index=0, key=f"rating_{movie.index}")
 
                     # # Store the rating in the ratings_dict, or set to NaN if not rated
-                    ratings_dict[movie['movie_id']] = rating if rating != 0 else np.nan
+                    ratings_dict[movie.index] = rating if rating != 0 else np.nan
 
         for movie_id in ratings_dict:
             star_rating = ratings_dict[movie_id]
