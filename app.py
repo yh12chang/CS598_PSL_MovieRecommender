@@ -241,16 +241,16 @@ def myIBCF(newuser, similarity_matrix):
         top_10_movies = remaining_movies[['MovieID', 'Title']]  # Ensure only MovieID and Title are included
         top_10_movies = top_10_movies.set_index('MovieID')['Title']
 
-    # # Check if fewer than 10 predictions are available (non-NA)
-    # if top_10_movies.isna().sum() >= 10:  # If there are fewer than 10 predictions
-    #     # Add the top popular movies to fill the remaining slots
-    #     remaining_movies = remaining_movies.nlargest(10 - len(top_10_movies), 'Rating')  # Change 'popularity' to 'Rating'
+    # Check if fewer than 10 predictions are available (non-NA)
+    if top_10_movies.isna().sum() >= 10:  # If there are fewer than 10 predictions
+        # Add the top popular movies to fill the remaining slots
+        remaining_movies = remaining_movies.nlargest(10 - len(top_10_movies), 'Rating')  # Change 'popularity' to 'Rating'
 
-    #     # Combine the top 10 predictions with the most popular remaining movies, keeping MovieID and Title
-    #     remaining_movies = remaining_movies[['MovieID', 'Title']]  # Keep MovieID and Title columns
+        # Combine the top 10 predictions with the most popular remaining movies, keeping MovieID and Title
+        remaining_movies = remaining_movies[['MovieID', 'Title']]  # Keep MovieID and Title columns
 
-    #     # Concatenate top 10 predictions and remaining movies by MovieID and Title
-    #     top_10_movies = pd.concat([top_10_movies, remaining_movies.set_index('MovieID')['Title']])
+        # Concatenate top 10 predictions and remaining movies by MovieID and Title
+        top_10_movies = pd.concat([top_10_movies, remaining_movies.set_index('MovieID')['Title']])
 
 
     # # Return the top 10 movies
@@ -344,7 +344,7 @@ if submit_rating:
     # Execute IBCF computation
     top_movies_df = myIBCF(user_rating_array, top30_s_matrix)
 
-    st.write(top_movies_df)
+    print(top_movies_df)
 
     # Display a thank you message and the top 10 movies according to the IBCF computation
     with output_container:
@@ -353,7 +353,7 @@ if submit_rating:
 
         # Display the top 10 rated movies
         num_cols = 5
-        rows = 3
+        rows = 2
 
         for row_id in range(rows):
             cols = st.columns(num_cols)
