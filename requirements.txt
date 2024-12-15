@@ -1,0 +1,6 @@
+streamlit
+streamlit_star_rating
+pandas
+numpy
+io
+requests
