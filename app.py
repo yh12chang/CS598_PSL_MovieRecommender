@@ -272,7 +272,7 @@ ratings_dict = {}
 # Container for aligning submit button
 top_columns = st.columns((10,2))
 with top_columns[1]:
-    submit_rating = st.button("Finish Rating", use_container_width=True)
+    submit_rating = st.button("Get Recommendations", use_container_width=True)
 
 # Container to set the output 10 movie reviews
 output_container = st.container(border=True)
@@ -338,7 +338,8 @@ if submit_rating:
 
     # Display a thank you message
     with output_container:
-        st.write("Thank you for your ratings!")
+        st.markdown("<p style='text-align: center; padding-bottom: 20px'>Here are your recommendations! </p>", unsafe_allow_html=True)
+        # st.write("Here are your recommendations!")
 
         # Display the top 10 rated movies
         num_cols = 5
