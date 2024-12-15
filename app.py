@@ -65,7 +65,6 @@ def load_data():
     movies_df["thumbnail_url"] = movies_df["movie_id"].apply(lambda x: f"{base_url}{x}.jpg")
 
 
-
     # # RETRIEVE RATINGS DATA (NEEDED ONLY ONCE FOR MATRIX COMPUTATION)
     # # Create a matrix for ratings for each user with movies and the columns with values assigned to them
 
@@ -78,6 +77,8 @@ def load_data():
     #     rating_matrix = rating_data.pivot(index='UserID', columns='MovieID', values='Rating')
     # else:
     #     print('failed')
+
+
     return movies_df
 
 
@@ -258,11 +259,6 @@ def myIBCF(newuser, similarity_matrix):
 
 
 
-
-
-
-
-
 # DISPLY 100 MOVIES ONTO THE WEBPAGE FOR USERS TO RATE
 # What needs to be displayed:
 # - Movie Numbnail
@@ -317,8 +313,9 @@ def rate_movie():
 
     return ratings_dict
 
+# Load in the ratings dictionary so that we dont need to repeat it
 ratings_dict  = rate_movie()
-
+# Load in the movie data from previous fragment
 total_movie_df = load_data()
 movies_df = total_movie_df
 
@@ -348,7 +345,7 @@ if submit_rating:
 
             # Execute IBCF computation
             top_movies_df = myIBCF(user_rating_array, top30_s_matrix)
-            
+
             st.markdown("<h4 style='text-align: center; padding-bottom: 20px'>Here are your recommendations! </h4>", unsafe_allow_html=True)
             # st.write("Here are your recommendations!")
 
