@@ -344,7 +344,7 @@ if submit_rating:
     # Execute IBCF computation
     top_movies_df = myIBCF(user_rating_array, top30_s_matrix)
 
-    st.write(print(top_movies_df.empty))
+    st.write(top_movies_df.empty)
 
     # Display a thank you message and the top 10 movies according to the IBCF computation
     with output_container:
