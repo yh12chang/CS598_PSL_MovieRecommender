@@ -223,6 +223,8 @@ def myIBCF(newuser, similarity_matrix):
     # Get the top 10 movies based on the predicted ratings
     top_10_movies = predictions.nlargest(10)
 
+    print(top_10_movies)
+
     # Check if fewer than 10 predictions are available (non-NA)
     if top_10_movies.isna().sum() >= 10:  # If there are fewer than 10 predictions
         # Load popularity data from GitHub raw link
@@ -335,7 +337,7 @@ if submit_rating:
     # Execute IBCF computation
     top_movies_df = myIBCF(user_rating_array, top30_s_matrix)
 
-    len(top_movies_df)
+    st.write(top_movies_df)
 
     # Display a thank you message and the top 10 movies according to the IBCF computation
     with output_container:
