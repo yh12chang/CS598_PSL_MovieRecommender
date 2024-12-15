@@ -371,5 +371,5 @@ if submit_rating:
                 movie = movies_df[movies_df['movie_id'] == movie_id]
                 st.write(movie["thumbnail_url"].values)
                 with col:
-                    st.image(movie['thumbnail_url'], use_container_width=True)
+                    st.image(movie['thumbnail_url'].values, use_container_width=True)
                     st.text(movie['title'])
