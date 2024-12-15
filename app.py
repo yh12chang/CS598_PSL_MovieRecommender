@@ -236,7 +236,7 @@ def myIBCF(newuser, similarity_matrix):
     # Check if top_10_movies is empty (i.e., no predictions available)
     if top_10_movies.isna().all():  # If there are no predictions (top_10_movies is empty)
         # Select the top 10 popular movies based on 'Rating'
-        remaining_movies = remaining_movies.nlargest(10, 'Rating')  # Change 'popularity' to 'Rating'
+        remaining_movies = remaining_movies.nlargest(10)  # Change 'popularity' to 'Rating'
 
         # Concatenate the top 10 most popular movies directly into top_10_movies
         top_10_movies = remaining_movies[['MovieID', 'Title']]  # Ensure only MovieID and Title are included
