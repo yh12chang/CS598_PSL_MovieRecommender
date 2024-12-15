@@ -225,7 +225,7 @@ def myIBCF(newuser, similarity_matrix):
     top_10_movies = predictions.nlargest(10)
 
     # Load popularity data from GitHub raw link
-    pop_matrix_url = 'https://github.com/yh12chang/Cs_598_PSL_Project_4/raw/refs/heads/main/top_animated_movies.csv'
+    pop_matrix_url = 'https://github.com/yh12chang/Cs_598_PSL_Project_4/raw/refs/heads/main/top_rated_movies.csv'
     pop_matrix_response = requests.get(pop_matrix_url)
     pop_csv = StringIO(pop_matrix_response.text)
     popularity_data = pd.read_csv(pop_csv, index_col=0)
