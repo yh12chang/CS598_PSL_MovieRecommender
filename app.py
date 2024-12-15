@@ -369,7 +369,7 @@ if submit_rating:
                 movie_id = int(top_movies_df.index[movie_idx])
 
                 movie = movies_df[movies_df['movie_id'] == movie_id]
-                st.write(movie["thumbnail_url"])
+                st.write(movie["thumbnail_url"].values)
                 with col:
                     st.image(movie['thumbnail_url'], use_container_width=True)
                     st.text(movie['title'])
