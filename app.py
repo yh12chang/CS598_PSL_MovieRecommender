@@ -35,7 +35,7 @@ st.title("Movie Recommender")
 # 2. Each movie rating needs to be stored into a DataFrame to use for computing the recommendations
 
 
-@st.experimental_fragment
+@st.fragment
 def load_data():
     with st.spinner("Loading information..."):
         # RETRIEVE MOVIE DATA
@@ -261,6 +261,7 @@ def myIBCF(newuser, similarity_matrix):
 # - Interactable Option for users to rate the movie out of 5 stars
 
 movie_100 = load_data().head(100)
+movies_df = load_data
 
 # Container for aligning submit button
 top_columns = st.columns((10,2))
@@ -270,7 +271,7 @@ with top_columns[1]:
 # Container to set the output 10 movie reviews
 output_container = st.container(border=True)
 
-@st.experimental_fragment
+@st.fragment
 def rate_movie():
     # Dictionary for the user movie ratings
     ratings_dict = {}
