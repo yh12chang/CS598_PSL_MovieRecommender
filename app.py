@@ -239,7 +239,7 @@ def myIBCF(newuser, similarity_matrix):
 
         # Concatenate the top 10 most popular movies directly into top_10_movies
         top_10_movies = remaining_movies[['MovieID', 'Title']]  # Ensure only MovieID and Title are included
-        top_10_movies.set_index('MovieID')['Title']
+        top_10_movies = top_10_movies.set_index('MovieID')['Title']
 
     # # Check if fewer than 10 predictions are available (non-NA)
     # if top_10_movies.isna().sum() >= 10:  # If there are fewer than 10 predictions
