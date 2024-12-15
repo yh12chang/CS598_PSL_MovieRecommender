@@ -231,17 +231,17 @@ def myIBCF(newuser, similarity_matrix):
         pop_csv = StringIO(pop_matrix_response.text)
         popularity_data = pd.read_csv(pop_csv, index_col=0)
         
-        # Save the popularity ranking to a file (to avoid recomputing)
-        popularity_data.to_csv('popularity_ranking.csv', index=False)
-        
         # Exclude the movies the user has already rated
-        remaining_movies = popularity_data[~popularity_data['movie_name'].isin(movie_names[rated_indices])]
+        remaining_movies = popularity_data[~popularity_data['Title'].isin(movie_names[rated_indices])]
         
         # Add the top popular movies to fill the remaining slots
-        remaining_movies = remaining_movies.nlargest(10 - len(top_10_movies), 'popularity')
+        remaining_movies = remaining_movies.nlargest(10 - len(top_10_movies), 'Rating')  # Change 'popularity' to 'Rating'
 
-        # Combine the top 10 predictions with the most popular remaining movies
-        top_10_movies = pd.concat([top_10_movies, remaining_movies['movie_name']])
+        # Combine the top 10 predictions with the most popular remaining movies, keeping MovieID and Title
+        remaining_movies = remaining_movies[['MovieID', 'Title']]  # Keep MovieID and Title columns
+
+        # Concatenate top 10 predictions and remaining movies by MovieID and Title
+        top_10_movies = pd.concat([top_10_movies, remaining_movies.set_index('Movie_ID')['Title']])
 
 
     # Return the top 10 movies
