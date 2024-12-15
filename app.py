@@ -233,7 +233,7 @@ def myIBCF(newuser, similarity_matrix):
     remaining_movies = popularity_data[~popularity_data['Title'].isin(movie_names[rated_indices])]
 
     # Check if top_10_movies is empty (i.e., no predictions available)
-    if top_10_movies == 'None':  # If there are no predictions (top_10_movies is empty)
+    if top_10_movies.empty:  # If there are no predictions (top_10_movies is empty)
         # Select the top 10 popular movies based on 'Rating'
         remaining_movies = remaining_movies.nlargest(10, 'Rating')  # Change 'popularity' to 'Rating'
 
