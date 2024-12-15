@@ -261,7 +261,7 @@ def myIBCF(newuser, similarity_matrix):
 # - Interactable Option for users to rate the movie out of 5 stars
 
 movie_100 = load_data().head(100)
-movies_df = load_data
+movies_df = load_data()
 
 # Container for aligning submit button
 top_columns = st.columns((10,4))
