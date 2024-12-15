@@ -4,6 +4,8 @@ import numpy as np
 import requests
 from io import StringIO
 
+
+st.set_page_config(page_title="Movie Recommender")
 st.set_page_config(layout="wide")
 # Apply custom CSS for the container width
 st.markdown("""
@@ -35,54 +37,50 @@ st.title("Movie Recommender")
 # 2. Each movie rating needs to be stored into a DataFrame to use for computing the recommendations
 
 
+@st.experimental_fragment
+def load_data():
+    with st.spinner("Loading information..."):
+        # RETRIEVE MOVIE DATA
+        # Assign each movie data into a pandas dataframe
 
+        movie_data_url = 'https://liangfgithub.github.io/MovieData/movies.dat?raw=true'
 
-with st.spinner("Loading information..."):
-    # RETRIEVE MOVIE DATA
-    # Assign each movie data into a pandas dataframe
+        # Fetch the file content from github
+        movie_response = requests.get(movie_data_url)
+        movie_response.raise_for_status()  # Raise an exceptionif the request fails
 
-    movie_data_url = 'https://liangfgithub.github.io/MovieData/movies.dat?raw=true'
+        # Split the file content into lines
+        lines = movie_response.text.strip().split("\n")
 
-    # Fetch the file content from github
-    movie_response = requests.get(movie_data_url)
-    movie_response.raise_for_status()  # Raise an exceptionif the request fails
+        movie_data = [line.split("::") for line in lines]
 
-    # Split the file content into lines
-    lines = movie_response.text.strip().split("\n")
+        movies_df = pd.DataFrame(movie_data, columns=['movie_id', 'title', 'genres'])
 
-    movie_data = [line.split("::") for line in lines]
+        # Convert movie_id to integer for better usability
+        movies_df["movie_id"] = movies_df["movie_id"].astype(int)
 
-    movies_df = pd.DataFrame(movie_data, columns=['movie_id', 'title', 'genres'])
+        # Split the genre column into lists
+        movies_df["genres"] = movies_df["genres"].apply(lambda x: x.split("|"))
 
-    # Convert movie_id to integer for better usability
-    movies_df["movie_id"] = movies_df["movie_id"].astype(int)
-
-    # Split the genre column into lists
-    movies_df["genres"] = movies_df["genres"].apply(lambda x: x.split("|"))
-
-    # Add a new column for movie thumbnail URLs
-    base_url = "https://liangfgithub.github.io/MovieImages/"
-    movies_df["thumbnail_url"] = movies_df["movie_id"].apply(lambda x: f"{base_url}{x}.jpg")
-
-
-
-    # RETRIEVE RATINGS DATA
-    # Create a matrix for ratings for each user with movies and the columns with values assigned to them
-
-    rating_data_url = 'https://liangfgithub.github.io/MovieData/ratings.dat?raw=true'
-    rating_response = requests.get(rating_data_url)
-
-    if rating_response.status_code == 200:
-        rating_data = pd.read_csv(StringIO(rating_response.text), sep="::", engine="python", names=["UserID", "MovieID", "Rating", "Timestamp"])
-
-        rating_matrix = rating_data.pivot(index='UserID', columns='MovieID', values='Rating')
-    else:
-        print('failed')
+        # Add a new column for movie thumbnail URLs
+        base_url = "https://liangfgithub.github.io/MovieImages/"
+        movies_df["thumbnail_url"] = movies_df["movie_id"].apply(lambda x: f"{base_url}{x}.jpg")
 
 
 
+        # # RETRIEVE RATINGS DATA (NEEDED ONLY ONCE FOR MATRIX COMPUTATION)
+        # # Create a matrix for ratings for each user with movies and the columns with values assigned to them
 
+        # rating_data_url = 'https://liangfgithub.github.io/MovieData/ratings.dat?raw=true'
+        # rating_response = requests.get(rating_data_url)
 
+        # if rating_response.status_code == 200:
+        #     rating_data = pd.read_csv(StringIO(rating_response.text), sep="::", engine="python", names=["UserID", "MovieID", "Rating", "Timestamp"])
+
+        #     rating_matrix = rating_data.pivot(index='UserID', columns='MovieID', values='Rating')
+        # else:
+        #     print('failed')
+    return movies_df
 
 
 
@@ -264,7 +262,7 @@ def myIBCF(newuser, similarity_matrix):
 # - Movie Name
 # - Interactable Option for users to rate the movie out of 5 stars
 
-movie_100 = movies_df.head(100)
+movie_100 = load_data().head(100)
 
 # Dictionary for the user movie ratings
 ratings_dict = {}
