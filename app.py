@@ -223,11 +223,13 @@ def myIBCF(newuser, similarity_matrix):
     # Get the top 10 movies based on the predicted ratings
     top_10_movies = predictions.nlargest(10)
 
-
     # Check if fewer than 10 predictions are available (non-NA)
     if top_10_movies.isna().sum() >= 10:  # If there are fewer than 10 predictions
         # Load popularity data from GitHub raw link
-        popularity_data = pd.read_csv('https://github.com/yh12chang/Cs_598_PSL_Project_4/raw/refs/heads/main/top_animated_movies.csv')
+        pop_matrix_url = 'https://github.com/yh12chang/Cs_598_PSL_Project_4/raw/refs/heads/main/top_animated_movies.csv'
+        pop_matrix_response = requests.get(pop_matrix_url)
+        pop_csv = StringIO(pop_matrix_response.text)
+        popularity_data = pd.read_csv(pop_csv, index_col=0)
         
         # Save the popularity ranking to a file (to avoid recomputing)
         popularity_data.to_csv('popularity_ranking.csv', index=False)
