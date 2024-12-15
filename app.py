@@ -325,30 +325,31 @@ movies_df = total_movie_df
 
 # Executes when the generate recommendations is clicked
 if submit_rating:
-    # Create a DataFrame from the ratings_dict, ensuring that unrated movies are set to NaN
-    user_rating = {movie: ratings_dict.get(movie, np.nan) for movie in movie_100['movie_id']}
-    ratings_df = pd.DataFrame(list(user_rating.items()), columns=["Movie ID", "Rating"])
+    with st.spinner('Loading Recommendations...'):
+        # Create a DataFrame from the ratings_dict, ensuring that unrated movies are set to NaN
+        user_rating = {movie: ratings_dict.get(movie, np.nan) for movie in movie_100['movie_id']}
+        ratings_df = pd.DataFrame(list(user_rating.items()), columns=["Movie ID", "Rating"])
 
-    # RETRIEVE TOP 30 S MATRIX FROM GITHUB
-    # This section is added to speed up the application run time so that the cosine similarity computation does not need to be repeated every time (~67 minutes for this dataset)
-    top30_s_matrix_url = 'https://github.com/yh12chang/Cs_598_PSL_Project_4/raw/refs/heads/main/app_top30_s_matrix.csv'
-    top30_s_matrix_response = requests.get(top30_s_matrix_url)
-    csv_data = StringIO(top30_s_matrix_response.text)
-    top30_s_matrix = pd.read_csv(csv_data, index_col=0)
+        # RETRIEVE TOP 30 S MATRIX FROM GITHUB
+        # This section is added to speed up the application run time so that the cosine similarity computation does not need to be repeated every time (~67 minutes for this dataset)
+        top30_s_matrix_url = 'https://github.com/yh12chang/Cs_598_PSL_Project_4/raw/refs/heads/main/app_top30_s_matrix.csv'
+        top30_s_matrix_response = requests.get(top30_s_matrix_url)
+        csv_data = StringIO(top30_s_matrix_response.text)
+        top30_s_matrix = pd.read_csv(csv_data, index_col=0)
 
-    # Convert the user's ratings to a numpy array
-    # Also increase the user ratings array to match the size of the 3706 movies
-    w = ratings_df.values  
-    user_array = w[:, 1]
-    additional_nan = np.full(3706 - len(user_array), np.nan)
-    user_rating_array = np.concatenate((user_array, additional_nan))
+        # Convert the user's ratings to a numpy array
+        # Also increase the user ratings array to match the size of the 3706 movies
+        w = ratings_df.values  
+        user_array = w[:, 1]
+        additional_nan = np.full(3706 - len(user_array), np.nan)
+        user_rating_array = np.concatenate((user_array, additional_nan))
 
-    # Execute IBCF computation
-    top_movies_df = myIBCF(user_rating_array, top30_s_matrix)
+        # Execute IBCF computation
+        top_movies_df = myIBCF(user_rating_array, top30_s_matrix)
 
-    # Display a thank you message and the top 10 movies according to the IBCF computation
-    with output_container:
-        with st.spinner('Loading Recommendations...'):
+        # Display a thank you message and the top 10 movies according to the IBCF computation
+        with output_container:
+            
             st.markdown("<h4 style='text-align: center; padding-bottom: 20px'>Here are your recommendations! </h4>", unsafe_allow_html=True)
             # st.write("Here are your recommendations!")
 
