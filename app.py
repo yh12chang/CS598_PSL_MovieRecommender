@@ -230,11 +230,10 @@ def myIBCF(newuser, similarity_matrix):
         pop_matrix_response = requests.get(pop_matrix_url)
         pop_csv = StringIO(pop_matrix_response.text)
         popularity_data = pd.read_csv(pop_csv, index_col=0)
-        print(popularity_data)
 
         # Exclude the movies the user has already rated
         remaining_movies = popularity_data[~popularity_data['Title'].isin(movie_names[rated_indices])]
-        print(remaining_movies)
+
         # Add the top popular movies to fill the remaining slots
         remaining_movies = remaining_movies.nlargest(10 - len(top_10_movies), 'Rating')  # Change 'popularity' to 'Rating'
 
@@ -335,6 +334,8 @@ if submit_rating:
 
     # Execute IBCF computation
     top_movies_df = myIBCF(user_rating_array, top30_s_matrix)
+
+    len(top_movies_df)
 
     # Display a thank you message and the top 10 movies according to the IBCF computation
     with output_container:
