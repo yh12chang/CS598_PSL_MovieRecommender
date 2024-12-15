@@ -264,7 +264,7 @@ movie_100 = load_data().head(100)
 movies_df = load_data
 
 # Container for aligning submit button
-top_columns = st.columns((10,2))
+top_columns = st.columns((10,4))
 with top_columns[1]:
     submit_rating = st.button("Get Recommendations", use_container_width=True)
 
