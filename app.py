@@ -232,7 +232,6 @@ def myIBCF(newuser, similarity_matrix):
         popularity_data = pd.read_csv(pop_csv, index_col=0)
         print(popularity_data)
 
-
         # Exclude the movies the user has already rated
         remaining_movies = popularity_data[~popularity_data['Title'].isin(movie_names[rated_indices])]
         print(remaining_movies)
