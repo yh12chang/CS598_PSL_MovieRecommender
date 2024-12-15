@@ -64,6 +64,7 @@ def load_data():
     base_url = "https://liangfgithub.github.io/MovieImages/"
     movies_df["thumbnail_url"] = movies_df["movie_id"].apply(lambda x: f"{base_url}{x}.jpg")
 
+    movies_df = movies_df.set_index('movie_id')
 
 
     # # RETRIEVE RATINGS DATA (NEEDED ONLY ONCE FOR MATRIX COMPUTATION)
