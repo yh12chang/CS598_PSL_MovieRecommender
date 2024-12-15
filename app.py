@@ -298,11 +298,17 @@ with rating_container:
                 st.image(movie['thumbnail_url'], use_container_width=True)
                 st.text(movie['title'])
 
-                # Capture the star rating selection for each movie
-                rating = st_star_rating("Rating", maxValue=5, defaultValue=0, key=f"rating_{movie['movie_id']}", size=20)
+                # # Capture the star rating selection for each movie
+                # rating = st_star_rating("Rating", maxValue=5, defaultValue=0, key=f"rating_{movie['movie_id']}", size=20)
 
-                # Store the rating in the ratings_dict, or set to NaN if not rated
+                rating = st.radio(f"Rating", options=["Select a rating", "★", "★★", "★★★", "★★★★", "★★★★★"], index=0)
+
+                # # Store the rating in the ratings_dict, or set to NaN if not rated
                 ratings_dict[movie['movie_id']] = rating if rating != 0 else np.nan
+
+    for movie_id in ratings_dict:
+        star_rating = ratings_dict[movie_id]
+        ratings_dict[movie_id] = {"★": 1, "★★": 2, "★★★": 3, "★★★★": 4, "★★★★★": 5}.get(star_rating, np.nan)
 
 if submit_rating:
     # Create a DataFrame from the ratings_dict, ensuring that unrated movies are set to NaN
