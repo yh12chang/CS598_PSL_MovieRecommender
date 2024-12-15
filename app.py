@@ -347,9 +347,6 @@ if submit_rating:
     top_movies_df = myIBCF(user_rating_array, top30_s_matrix)
 
     st.write(top_movies_df.index)
-    st.write(movies_df.index[1])
-    st.write(top_movies_df.index[1])
-    st.write(movies_df[movies_df['movie_id'] == top_movies_df.index[1]])
 
     # Display a thank you message and the top 10 movies according to the IBCF computation
     with output_container:
@@ -369,6 +366,8 @@ if submit_rating:
                 movie_id = int(top_movies_df.index[movie_idx])
 
                 movie = movies_df[movies_df['movie_id'] == movie_id]
+                st.write(movie)
+
                 with col:
                     st.image(movie['thumbnail_url'].values[0], use_container_width=True)
                     st.text(movie['title'])
