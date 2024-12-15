@@ -348,7 +348,7 @@ if submit_rating:
 
     st.write(top_movies_df.index)
     st.write(movies_df)
-    st.write(top_movies_df.index[1])
+    st.write(type(top_movies_df.index[1]))
     st.write(movies_df[top_movies_df.index[1]])
     st.write(top_movies_df.index[2])
     st.write(movies_df[top_movies_df.index[2]])
