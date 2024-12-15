@@ -242,7 +242,7 @@ def myIBCF(newuser, similarity_matrix):
         remaining_movies = remaining_movies[['MovieID', 'Title']]  # Keep MovieID and Title columns
 
         # Concatenate top 10 predictions and remaining movies by MovieID and Title
-        top_10_movies = pd.concat([top_10_movies, remaining_movies.set_index('Movie_ID')['Title']])
+        top_10_movies = pd.concat([top_10_movies, remaining_movies.set_index('MovieID')['Title']])
 
 
     # Return the top 10 movies
