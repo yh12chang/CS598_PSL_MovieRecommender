@@ -64,7 +64,6 @@ def load_data():
     base_url = "https://liangfgithub.github.io/MovieImages/"
     movies_df["thumbnail_url"] = movies_df["movie_id"].apply(lambda x: f"{base_url}{x}.jpg")
 
-    movies_df = movies_df.set_index('movie_id')
 
 
     # # RETRIEVE RATINGS DATA (NEEDED ONLY ONCE FOR MATRIX COMPUTATION)
@@ -271,7 +270,6 @@ def myIBCF(newuser, similarity_matrix):
 # - Interactable Option for users to rate the movie out of 5 stars
 
 movie_100 = load_data().head(100)
-movies_df = load_data()
 
 # Container for aligning submit button
 top_columns = st.columns((10,4))
@@ -308,10 +306,10 @@ def rate_movie():
                     # # Capture the star rating selection for each movie
                     # rating = st_star_rating("Rating", maxValue=5, defaultValue=0, key=f"rating_{movie['movie_id']}", size=20)
 
-                    rating = st.radio(f"Rating", options=["Select a rating", "★", "★★", "★★★", "★★★★", "★★★★★"], index=0, key=f"rating_{movie.index}")
+                    rating = st.radio(f"Rating", options=["Select a rating", "★", "★★", "★★★", "★★★★", "★★★★★"], index=0, key=f"rating_{movie['movie_id']}")
 
                     # # Store the rating in the ratings_dict, or set to NaN if not rated
-                    ratings_dict[movie.index] = rating if rating != 0 else np.nan
+                    ratings_dict[movie['movie_id']] = rating if rating != 0 else np.nan
 
         for movie_id in ratings_dict:
             star_rating = ratings_dict[movie_id]
@@ -321,6 +319,8 @@ def rate_movie():
 
 ratings_dict  = rate_movie()
 
+total_movie_df = load_data()
+movie_df = total_movie_df.set_index('movie_id')
 
 # Executes when the generate recommendations is clicked
 if submit_rating:
