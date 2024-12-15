@@ -223,24 +223,22 @@ def myIBCF(newuser, similarity_matrix):
     # Get the top 10 movies based on the predicted ratings
     top_10_movies = predictions.nlargest(10)
 
-    print(top_10_movies.empty)
+    # Load popularity data from GitHub raw link
+    pop_matrix_url = 'https://github.com/yh12chang/Cs_598_PSL_Project_4/raw/refs/heads/main/top_animated_movies.csv'
+    pop_matrix_response = requests.get(pop_matrix_url)
+    pop_csv = StringIO(pop_matrix_response.text)
+    popularity_data = pd.read_csv(pop_csv, index_col=0)
 
-    # # Load popularity data from GitHub raw link
-    # pop_matrix_url = 'https://github.com/yh12chang/Cs_598_PSL_Project_4/raw/refs/heads/main/top_animated_movies.csv'
-    # pop_matrix_response = requests.get(pop_matrix_url)
-    # pop_csv = StringIO(pop_matrix_response.text)
-    # popularity_data = pd.read_csv(pop_csv, index_col=0)
+    # Exclude the movies the user has already rated
+    remaining_movies = popularity_data[~popularity_data['Title'].isin(movie_names[rated_indices])]
 
-    # # Exclude the movies the user has already rated
-    # remaining_movies = popularity_data[~popularity_data['Title'].isin(movie_names[rated_indices])]
+    # Check if top_10_movies is empty (i.e., no predictions available)
+    if top_10_movies.empty:  # If there are no predictions (top_10_movies is empty)
+        # Select the top 10 popular movies based on 'Rating'
+        remaining_movies = remaining_movies.nlargest(10, 'Rating')  # Change 'popularity' to 'Rating'
 
-    # # Check if top_10_movies is empty (i.e., no predictions available)
-    # if top_10_movies.empty:  # If there are no predictions (top_10_movies is empty)
-    #     # Select the top 10 popular movies based on 'Rating'
-    #     remaining_movies = remaining_movies.nlargest(10, 'Rating')  # Change 'popularity' to 'Rating'
-
-    #     # Concatenate the top 10 most popular movies directly into top_10_movies
-    #     top_10_movies = remaining_movies[['MovieID', 'Title']]  # Ensure only MovieID and Title are included
+        # Concatenate the top 10 most popular movies directly into top_10_movies
+        top_10_movies = remaining_movies[['MovieID', 'Title']]  # Ensure only MovieID and Title are included
 
     # # Check if fewer than 10 predictions are available (non-NA)
     # if top_10_movies.isna().sum() >= 10:  # If there are fewer than 10 predictions
