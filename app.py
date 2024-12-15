@@ -1,11 +1,9 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 import requests
 from streamlit_star_rating import st_star_rating
 from io import StringIO
-from datetime import datetime
 
 st.set_page_config(layout="wide")
 # Apply custom CSS for the container width
