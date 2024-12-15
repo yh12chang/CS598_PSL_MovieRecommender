@@ -343,7 +343,7 @@ if submit_rating:
 
         # Display the top 10 rated movies
         num_cols = 5
-        rows = 2
+        rows = 3
 
         for row_id in range(rows):
             cols = st.columns(num_cols)
