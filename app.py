@@ -348,7 +348,7 @@ if submit_rating:
 
     # Display a thank you message and the top 10 movies according to the IBCF computation
     with output_container:
-        with st.spinner:
+        with st.spinner('Loading Recommendations...'):
             st.markdown("<h4 style='text-align: center; padding-bottom: 20px'>Here are your recommendations! </h4>", unsafe_allow_html=True)
             # st.write("Here are your recommendations!")
 
