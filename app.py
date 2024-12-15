@@ -370,7 +370,7 @@ if submit_rating:
                     break
                 movie_id = int(top_movies_df.index[movie_idx])
 
-                movie = movies_df['movie_id'].loc[movie_id]
+                movie = movies_df.loc[movies_df['movie_id'] == movie_id]
                 with col:
                     st.image(movie['thumbnail_url'], use_container_width=True)
                     st.text(movie['title'])
