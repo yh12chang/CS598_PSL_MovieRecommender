@@ -348,21 +348,22 @@ if submit_rating:
 
     # Display a thank you message and the top 10 movies according to the IBCF computation
     with output_container:
-        st.markdown("<h4 style='text-align: center; padding-bottom: 20px'>Here are your recommendations! </h4>", unsafe_allow_html=True)
-        # st.write("Here are your recommendations!")
+        with st.spinner:
+            st.markdown("<h4 style='text-align: center; padding-bottom: 20px'>Here are your recommendations! </h4>", unsafe_allow_html=True)
+            # st.write("Here are your recommendations!")
 
-        # Display the top 10 rated movies
-        num_cols = 5
-        rows = 2
+            # Display the top 10 rated movies
+            num_cols = 5
+            rows = 2
 
-        for row_id in range(rows):
-            cols = st.columns(num_cols)
-            for col_id, col in enumerate(cols):
-                movie_idx = row_id * num_cols + col_id
-                if movie_idx >= len(top_movies_df):
-                    break
-                movie_id = int(top_movies_df.index[movie_idx])
-                movie = movies_df[movies_df['movie_id'] == movie_id]
-                with col:
-                    st.image(movie['thumbnail_url'].values[0], use_container_width=True)
-                    st.text(movie['title'].values[0])
+            for row_id in range(rows):
+                cols = st.columns(num_cols)
+                for col_id, col in enumerate(cols):
+                    movie_idx = row_id * num_cols + col_id
+                    if movie_idx >= len(top_movies_df):
+                        break
+                    movie_id = int(top_movies_df.index[movie_idx])
+                    movie = movies_df[movies_df['movie_id'] == movie_id]
+                    with col:
+                        st.image(movie['thumbnail_url'].values[0], use_container_width=True)
+                        st.text(movie['title'].values[0])
