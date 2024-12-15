@@ -320,7 +320,7 @@ def rate_movie():
 ratings_dict  = rate_movie()
 
 total_movie_df = load_data()
-movies_df = total_movie_df.set_index('movie_id')
+movies_df = total_movie_df
 
 
 # Executes when the generate recommendations is clicked
