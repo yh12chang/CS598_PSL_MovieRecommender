@@ -308,7 +308,7 @@ def rate_movie():
                     # # Capture the star rating selection for each movie
                     # rating = st_star_rating("Rating", maxValue=5, defaultValue=0, key=f"rating_{movie['movie_id']}", size=20)
 
-                    rating = st.radio(f"Rating", options=["Select a rating", "★", "★★", "★★★", "★★★★", "★★★★★"], index=0, key=f"rating_{movie['movie_id']}")
+                    rating = st.radio(f"Rating", options=["Select a rating", "★", "★★", "★★★", "★★★★", "★★★★★"], index=0, key=f"rating_{movie.index}")
 
                     # # Store the rating in the ratings_dict, or set to NaN if not rated
                     ratings_dict[movie['movie_id']] = rating if rating != 0 else np.nan
