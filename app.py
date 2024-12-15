@@ -223,7 +223,7 @@ def myIBCF(newuser, similarity_matrix):
     # Get the top 10 movies based on the predicted ratings
     top_10_movies = predictions.nlargest(10)
 
-    print(top_10_movies)
+    print(top_10_movies.empty)
 
     # Load popularity data from GitHub raw link
     pop_matrix_url = 'https://github.com/yh12chang/Cs_598_PSL_Project_4/raw/refs/heads/main/top_animated_movies.csv'
