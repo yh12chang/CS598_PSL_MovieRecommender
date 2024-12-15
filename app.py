@@ -18,7 +18,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-st.title("Movie Recommender")
+st.title("Movie.io")
+st.write('Movie recommedation system based on IBCF')
 
 
 # In this section, we need to list the 100 movies the user needs to rank.
@@ -37,47 +38,46 @@ st.title("Movie Recommender")
 
 @st.fragment
 def load_data():
-    with st.spinner("Loading information..."):
-        # RETRIEVE MOVIE DATA
-        # Assign each movie data into a pandas dataframe
+    # RETRIEVE MOVIE DATA
+    # Assign each movie data into a pandas dataframe
 
-        movie_data_url = 'https://liangfgithub.github.io/MovieData/movies.dat?raw=true'
+    movie_data_url = 'https://liangfgithub.github.io/MovieData/movies.dat?raw=true'
 
-        # Fetch the file content from github
-        movie_response = requests.get(movie_data_url)
-        movie_response.raise_for_status()  # Raise an exceptionif the request fails
+    # Fetch the file content from github
+    movie_response = requests.get(movie_data_url)
+    movie_response.raise_for_status()  # Raise an exceptionif the request fails
 
-        # Split the file content into lines
-        lines = movie_response.text.strip().split("\n")
+    # Split the file content into lines
+    lines = movie_response.text.strip().split("\n")
 
-        movie_data = [line.split("::") for line in lines]
+    movie_data = [line.split("::") for line in lines]
 
-        movies_df = pd.DataFrame(movie_data, columns=['movie_id', 'title', 'genres'])
+    movies_df = pd.DataFrame(movie_data, columns=['movie_id', 'title', 'genres'])
 
-        # Convert movie_id to integer for better usability
-        movies_df["movie_id"] = movies_df["movie_id"].astype(int)
+    # Convert movie_id to integer for better usability
+    movies_df["movie_id"] = movies_df["movie_id"].astype(int)
 
-        # Split the genre column into lists
-        movies_df["genres"] = movies_df["genres"].apply(lambda x: x.split("|"))
+    # Split the genre column into lists
+    movies_df["genres"] = movies_df["genres"].apply(lambda x: x.split("|"))
 
-        # Add a new column for movie thumbnail URLs
-        base_url = "https://liangfgithub.github.io/MovieImages/"
-        movies_df["thumbnail_url"] = movies_df["movie_id"].apply(lambda x: f"{base_url}{x}.jpg")
-
+    # Add a new column for movie thumbnail URLs
+    base_url = "https://liangfgithub.github.io/MovieImages/"
+    movies_df["thumbnail_url"] = movies_df["movie_id"].apply(lambda x: f"{base_url}{x}.jpg")
 
 
-        # # RETRIEVE RATINGS DATA (NEEDED ONLY ONCE FOR MATRIX COMPUTATION)
-        # # Create a matrix for ratings for each user with movies and the columns with values assigned to them
 
-        # rating_data_url = 'https://liangfgithub.github.io/MovieData/ratings.dat?raw=true'
-        # rating_response = requests.get(rating_data_url)
+    # # RETRIEVE RATINGS DATA (NEEDED ONLY ONCE FOR MATRIX COMPUTATION)
+    # # Create a matrix for ratings for each user with movies and the columns with values assigned to them
 
-        # if rating_response.status_code == 200:
-        #     rating_data = pd.read_csv(StringIO(rating_response.text), sep="::", engine="python", names=["UserID", "MovieID", "Rating", "Timestamp"])
+    # rating_data_url = 'https://liangfgithub.github.io/MovieData/ratings.dat?raw=true'
+    # rating_response = requests.get(rating_data_url)
 
-        #     rating_matrix = rating_data.pivot(index='UserID', columns='MovieID', values='Rating')
-        # else:
-        #     print('failed')
+    # if rating_response.status_code == 200:
+    #     rating_data = pd.read_csv(StringIO(rating_response.text), sep="::", engine="python", names=["UserID", "MovieID", "Rating", "Timestamp"])
+
+    #     rating_matrix = rating_data.pivot(index='UserID', columns='MovieID', values='Rating')
+    # else:
+    #     print('failed')
     return movies_df
 
 
@@ -186,11 +186,9 @@ def myIBCF(newuser, similarity_matrix):
     # Load the similarity matrix
     S = similarity_matrix
     S_values = S.values  # Extract the numeric values of the similarity matrix
-    print(len(S_values[1]))
 
     # Ensure newuser is a numpy array
     w = newuser  # Convert the user's ratings to a numpy array
-
 
     # Find the indices of the movies that the user has rated (non-NaN ratings)
     rated_indices = np.where(~np.isnan(w))[0]
@@ -226,22 +224,22 @@ def myIBCF(newuser, similarity_matrix):
     top_10_movies = predictions.nlargest(10)
 
 
-    # # Check if fewer than 10 predictions are available (non-NA)
-    # if top_10_movies.isna().sum() >= 10:  # If there are fewer than 10 predictions
-    #     # Load popularity data from GitHub raw link
-    #     popularity_data = pd.read_csv(popularity_url)
+    # Check if fewer than 10 predictions are available (non-NA)
+    if top_10_movies.isna().sum() >= 10:  # If there are fewer than 10 predictions
+        # Load popularity data from GitHub raw link
+        popularity_data = pd.read_csv('https://github.com/yh12chang/Cs_598_PSL_Project_4/raw/refs/heads/main/top_animated_movies.csv')
         
-    #     # Save the popularity ranking to a file (to avoid recomputing)
-    #     popularity_data.to_csv('popularity_ranking.csv', index=False)
+        # Save the popularity ranking to a file (to avoid recomputing)
+        popularity_data.to_csv('popularity_ranking.csv', index=False)
         
-    #     # Exclude the movies the user has already rated
-    #     remaining_movies = popularity_data[~popularity_data['movie_name'].isin(movie_names[rated_indices])]
+        # Exclude the movies the user has already rated
+        remaining_movies = popularity_data[~popularity_data['movie_name'].isin(movie_names[rated_indices])]
         
-    #     # Add the top popular movies to fill the remaining slots
-    #     remaining_movies = remaining_movies.nlargest(10 - len(top_10_movies), 'popularity')
+        # Add the top popular movies to fill the remaining slots
+        remaining_movies = remaining_movies.nlargest(10 - len(top_10_movies), 'popularity')
 
-    #     # Combine the top 10 predictions with the most popular remaining movies
-    #     top_10_movies = pd.concat([top_10_movies, remaining_movies['movie_name']])
+        # Combine the top 10 predictions with the most popular remaining movies
+        top_10_movies = pd.concat([top_10_movies, remaining_movies['movie_name']])
 
 
     # Return the top 10 movies
@@ -269,7 +267,7 @@ with top_columns[1]:
     submit_rating = st.button("Get Recommendations", use_container_width=True)
 
 # Container to set the output 10 movie reviews
-output_container = st.container(border=True)
+output_container = st.container()
 
 @st.fragment
 def rate_movie():
@@ -311,6 +309,8 @@ def rate_movie():
 
 ratings_dict  = rate_movie()
 
+
+# Executes when the generate recommendations is clicked
 if submit_rating:
     # Create a DataFrame from the ratings_dict, ensuring that unrated movies are set to NaN
     user_rating = {movie: ratings_dict.get(movie, np.nan) for movie in movie_100['movie_id']}
@@ -318,29 +318,24 @@ if submit_rating:
 
     # RETRIEVE TOP 30 S MATRIX FROM GITHUB
     # This section is added to speed up the application run time so that the cosine similarity computation does not need to be repeated every time (~67 minutes for this dataset)
-
     top30_s_matrix_url = 'https://github.com/yh12chang/Cs_598_PSL_Project_4/raw/refs/heads/main/app_top30_s_matrix.csv'
     top30_s_matrix_response = requests.get(top30_s_matrix_url)
-
     csv_data = StringIO(top30_s_matrix_response.text)
-
     top30_s_matrix = pd.read_csv(csv_data, index_col=0)
 
-    w = ratings_df.values  # Convert the user's ratings to a numpy array
+    # Convert the user's ratings to a numpy array
+    # Also increase the user ratings array to match the size of the 3706 movies
+    w = ratings_df.values  
     user_array = w[:, 1]
-
     additional_nan = np.full(3706 - len(user_array), np.nan)
-
     user_rating_array = np.concatenate((user_array, additional_nan))
 
-
-
+    # Execute IBCF computation
     top_movies_df = myIBCF(user_rating_array, top30_s_matrix)
 
-
-    # Display a thank you message
+    # Display a thank you message and the top 10 movies according to the IBCF computation
     with output_container:
-        st.markdown("<p style='text-align: center; padding-bottom: 20px'>Here are your recommendations! </p>", unsafe_allow_html=True)
+        st.markdown("<h4 style='text-align: center; padding-bottom: 20px'>Here are your recommendations! </h4>", unsafe_allow_html=True)
         # st.write("Here are your recommendations!")
 
         # Display the top 10 rated movies
